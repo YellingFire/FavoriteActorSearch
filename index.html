@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Favorite Actors</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!-- gyphy personal api NR4fJfUQc5HaU7G31ajPePVqZiPpmZnS -->
+    <style type="text/css">
+        button,
+        div,
+        form,
+        input {
+          margin: 10px;
+        }
+      /* * {
+      outline: 1px solid red !important;
+      } */ 
+
+        .actors {
+          margin: 10px;
+        }
+
+        .backgroundClass {
+          background-color: rgba(192,192,192, 0.75);
+        }
+
+        .actor-btn {
+          background-color: rgb(27, 25, 25);
+          color: white;
+        }
+
+        .add_actor {
+          border: 3px solid rgb(27, 25, 25);
+        }
+
+      </style>
+</head>
+<body background="assets/images/actor background.jpg">
+    <div class="container backgroundClass">
+      <div class="row">
+        <div class="col-">
+            <h1>Favorite Actor Search</h1>
+        </div>         
+      </div>
+      <div class="row">
+        <div class="col-">
+            <!-- Rendered Buttons will get Dumped Here  -->
+            <div id="buttons-view"></div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="col-md">
+              <!-- Gifs are loaded here -->
+              <span class="actors"></span>
+            </div>
+            <div class="col-md">              
+                <form id="actorForm" class="add_actor">
+                    <label for="actor-input"><h2>Add a Favorite Actor</h2></label>
+                    <input type="text" id="actor-input">
+                    <br>          
+                    <!-- Button triggers new actor to be added -->
+                    <input id="add-actor" class="actor-btn btn" type="submit" value="Add a Favorite Actor">
+                </form>                
+            </div>
+        </div>
+      </div>  
+      <!-- <div class="container">
+        <div class="row">
+          <div class="col-12">
+            Gifs are loaded here
+            <div class="actors"></div>
+          </div>
+        </div>
+      </div> -->
+    </div>       
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</body>
+<script>
+  
+
+    var actors = ["Al Pacino", "Julia Roberts", "Christopher Walken", "Bill Murray"];
+
+    function displayActorStill() {
+
+      var searchActor= $(this).attr("data-name");
+      var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + searchActor + "&api_key=NR4fJfUQc5HaU7G31ajPePVqZiPpmZnS&limit=10";
+
+      $.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+
+    .then(function(response) {
+   
+      for (var i =0; i < response.data.length; i++) {
+        console.log(response)
+      
+        var displayActor = $("<div>")
+        var stillImage = response.data[i].images.downsized_still.url;
+        var gifImage = response.data[i].images.downsized_large.url;
+
+
+        var result = $("<img>").attr({
+          src: stillImage,
+          stillImage: stillImage,
+          animateImage: gifImage,
+          datastate: "still",
+          class: "gif"
+          })
+        
+        displayActor.html(result);
+        $(".actors").prepend(displayActor);
+        // console.log(result.active);
+       
+      }
+      
+
+      function animateDisplay() {
+        
+        var state = $(this).attr("datastate");
+      //  console.log(state)
+        if (state === "still") {
+          $(this).attr("src", $(this).attr("animateImage")),
+          $(this).attr("datastate", "motion");
+          // ($(this).attr("motion")));
+
+        }
+        else if (state === "motion") {
+          $(this).attr("src", $(this).attr("stillImage"));
+          $(this).attr("datastate", "still");
+        }
+        // console.log(state)
+      }
+      $(document).on("click", ".gif", animateDisplay);
+      
+
+    });
+
+    }
+   
+
+    // Render the buttons
+    function renderButtons() {
+
+      $("#buttons-view").empty();
+
+      for (var i = 0; i < actors.length; i++) {
+          //  generate buttons for each actor in the array
+          var a = $("<button>");
+          // Add a class of actor-btn to the button
+          a.addClass("actor-btn btn");
+          // Adding a data-attribute
+          a.attr("data-name", actors[i]);
+          // Providing the initial button text
+          a.text(actors[i]);
+          // Adding the button to the buttons-view div
+          $("#buttons-view").append(a);
+        }
+      }
+
+      //This handles the click function to add a new actor to the array 
+
+    $("#add-actor").on("click", function(event){
+      
+
+      event.preventDefault();
+
+      searchActor = $("#actor-input").val().trim()
+      // console.log();
+
+      actors.push(searchActor);
+      // console.log(searchActor);
+
+      renderButtons();
+    });
+
+    $(document).on("click", ".actor-btn", displayActorStill);
+
+
+    renderButtons();
+
+
+</script>
+</html>
