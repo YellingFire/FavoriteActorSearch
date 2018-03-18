@@ -68,14 +68,6 @@
             </div>
         </div>
       </div>  
-      <!-- <div class="container">
-        <div class="row">
-          <div class="col-12">
-            Gifs are loaded here
-            <div class="actors"></div>
-          </div>
-        </div>
-      </div> -->
     </div>       
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </body>
@@ -87,7 +79,7 @@
     function displayActorStill() {
 
       var searchActor= $(this).attr("data-name");
-      var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + searchActor + "&api_key=NR4fJfUQc5HaU7G31ajPePVqZiPpmZnS&limit=10";
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchActor + "&api_key=NR4fJfUQc5HaU7G31ajPePVqZiPpmZnS&limit=10";
 
       $.ajax({
       url: queryURL,
